@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{product.name}}
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+	<div class="col-md-5">
+		<img src="/uploads/{{ product.illustration }}" alt="{{product.name}}" class="img-fluid">
+	</div>
+	<div class="col-md-7 my-auto">
+		<h3>{{product.name}}</h3>
+		<p>{{product.subtitle}}</p>
+		<span class="product-page-price">{{(product.price /100) |number_format(2, ',', '.')}}
+			dt</span>
+
+		<p>{{product.description}}</p>
+		<a href="{{path('add_to_cart',{ 'id' :product.id})}}" class="btn btn-warning">Add to cart</a>
+		<hr>
+		<div class="col-md-7">
+			<form class="row g-5" action="{{path('auction',{'id':product.id})}}" method=" post">
+				<input type="hidden" class="form-control" id="exampleFormControlInput1" name="slug" value="{{product.slug}}">
+				<input type="hidden" class="form-control" id="exampleFormControlInput1" name="id" value="{{product.id}}">
+				<div class="mb-4">
+					{% set status = false %}
+					{% set contributor = "" %}
+					{% set max = product.price /100 %}
+					{% for auc in auctions %}
+						{% if auc.status == 1 %}
+							{% set status = true %}
+						{% endif %}
+
+						{% if auc.bid >= max %}
+							{% set max = auc.bid %}
+							{% set contributor = auc.contributor %}
+						{% endif %}
+					{% endfor %}
+					The Maximum price for this bid until now is<br>
+					<h1>{{max}}</h1>
+					{% if contributor != '' %}
+
+						The highest bidder is
+						<b>
+							{{contributor}}
+						</b>
+
+					{% else %}
+						<b>There are no bids for this product</b><br>
+						<b>Send yours now and be the first!</b><br>
+					{% endif %}
+
+					<br>
+					<label for="exampleFormControlInput1" class="form-label">Your price</label>
+					<input type="number" min={{(max + 1)}} class="form-control" id="exampleFormControlInput1" name="bid" placeholder="Enter your bid price">
+				</div>
+
+				<div class="mb-3">
+					<label for="exampleFormControlTextarea1" class="form-label">Comment</label>
+					<textarea class="form-control" id="exampleFormControlTextarea1" name="comment" rows="3"></textarea>
+				</div>
+
+				{% if ((product.contributor == user) or (status) ) %}
+
+					<div class="mb-3">
+						<button type="submit" class="btn btn-warning mb-3" disabled>You cannot bid</button>
+						<h5>This auction was closed or you are the owner!</h5>
+					</div>
+
+				{% else %}
+					<div class="mb-3">
+						<button type="submit" class="btn btn-warning mb-3">Send your bid now</button>
+					</div>
+				{% endif %}
+
+
+			</form>
+
+
+		</div>
+
+	</div>
+	{% if product.contributor == user  %}
+		<table class="table mt-3 table-dark table-hover ">
+			<thead>
+				<tr>
+					<th scope="col">Contributor</th>
+					<th scope="col"></th>
+					<th scope="col">Bid</th>
+					<th scope="col">Date</th>
+					<th scope="col">Comment</th>
+					<th scope="col">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set total = null %}
+				{% for auc in auctions %}
+					<tr>
+
+						<td>{{ auc.contributor }}</td>
+						<td></td>
+						<td>{{ auc.bid }}</td>
+						<td>{{ auc.date|date('Y-m-d H:i:s')}}</td>
+						<td>{{ auc.comment}}</td>
+						<td>
+							<a href="{{path('accept_bid',{'id':auc.id})}}">
+								Accpet bid
+							</a>
+						</td>
+					</tr>
+
+
+				</tbody>
+			</tbody>
+		</td>
+	{% endfor %}
+{% else %}
+	<table class="table mt-3 table-dark table-hover ">
+		<thead>
+			<tr>
+				<th scope="col">Contributor</th>
+				<th scope="col"></th>
+				<th scope="col">Bid</th>
+				<th scope="col">Date</th>
+				<th scope="col">Comment</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			{% set total = null %}
+			{% for auc in auctions %}
+				<tr>
+
+					<td>{{ auc.contributor }}</td>
+					<td></td>
+					<td>{{ auc.bid }}</td>
+					<td>{{ auc.date|date('Y-m-d H:i:s')}}</td>
+					<td>{{ auc.comment}}</td>
+
+				</tr>
+
+
+			</tbody>
+		</tbody>
+	</td>
+{% endfor %}{% endif %}</table></div>{% endblock %}

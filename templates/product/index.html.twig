@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block title %}Welcome - E-BI3
+
+
+{% endblock %}
+
+{% block content %}
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{message}}</div>
+	{% endfor %}
+	<div class="row">
+		<div class="col-md-3">
+			<h3>Filtrer</h3>
+			{{ form(form) }}
+			</div>
+			<div class="col-md-9">
+				<h3>Our Products</h3>
+
+				<div class="row">
+					{% for product in products %}
+						<div class="col-md-4">
+							<div class="product-item text-center">
+								<a href="{{ path('product', {'slug' : product.slug ,'id':product.id})}}"><img src="/uploads/{{ product.illustration }}" alt="{{product.name}}" class="img-fluid"></a>
+								<h5>{{product.name}}</h5>
+
+								<span class="product-price">{{(product.price /100) |number_format(2, ',', '.') }}
+									dt</span><br>
+								<span class="product-price">Added By
+									{{product.contributor}}
+								</span>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endblock %}

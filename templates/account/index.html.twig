@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My account - E-BI3
+{% endblock %}
+
+{% block content %}
+	<h1>My Account</h1>
+	<h2>Welcome
+		<b>{{ app.user.firstname }}</b>
+	</h2>
+</br>
+<hr>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="card" style="width: 15rem;">
+				<a href="{{ path('account_password') }}"><img class="card-img-top" src="assets/img/password.png" alt="Card image cap"></a>
+				<div class="card-body">
+					<p class="card-text">
+						<a href="{{ path('account_password') }}">Modify Profile</a>
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-3">
+			<div class="card" style="width: 15rem;">
+				<a href="{{ path('user_dashboard') }}"><img class="card-img-top" src="assets/img/addproduct.png" alt="Card image cap"></a>
+				<div class="card-body">
+					<p class="card-text">
+						<a href="{{ path('user_dashboard') }}">Add product</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</hr>
+</div>
+<br/>{% endblock %}
